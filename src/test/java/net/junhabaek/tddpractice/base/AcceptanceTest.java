@@ -1,9 +1,9 @@
-package net.junhabaek.tddpractice;
+package net.junhabaek.tddpractice.base;
 
 
+import io.restassured.RestAssured;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
-import net.junhabaek.tddpractice.utils.ResetTableTool;
-import org.junit.jupiter.api.BeforeAll;
+import net.junhabaek.tddpractice.utils.jpa.ResetTableTool;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,11 +24,12 @@ public abstract class AcceptanceTest {
     @Autowired
     WebApplicationContext applicationContext;
 
-    protected abstract List<String> getTableNames();
+    protected abstract List<Class> getEntityClasses();
 
     @BeforeEach
     public void setUp(){
         RestAssuredMockMvc.webAppContextSetup(applicationContext);
-        resetTableTool.execute(this.getTableNames());
+        RestAssured.port = port;
+        resetTableTool.execute(this.getEntityClasses());
     }
 }
