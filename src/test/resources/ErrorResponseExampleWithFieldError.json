@@ -1,0 +1,11 @@
+{
+  "errorCode": "A05",
+  "errorMessage" : "Unexpected Server Error",
+  "errors": [
+    {
+      "objectName": "someObject",
+      "field": "someField",
+      "defaultMessage": "someMessage"
+    }
+  ]
+}
