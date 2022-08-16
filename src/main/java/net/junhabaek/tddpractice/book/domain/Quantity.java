@@ -21,8 +21,15 @@ public class Quantity {
         return new Money(this.quantity.multiply(BigInteger.valueOf(times)));
     }
 
+    private Quantity(){
+        this.quantity = BigInteger.ZERO;
+    }
+
     public Quantity(BigInteger amount) {
-        if(amount == null || amount.compareTo(BigInteger.ZERO) < 0) throw new IllegalStateException();
+        if(amount == null || amount.compareTo(BigInteger.ZERO) < 0) {
+            throw new IllegalStateException("Quantity can not have minus value.");
+        }
+
         this.quantity = amount;
     }
 
