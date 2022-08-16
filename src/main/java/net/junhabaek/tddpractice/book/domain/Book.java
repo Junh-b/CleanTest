@@ -27,6 +27,7 @@ public class Book {
     private Long quantity;
 
 
+    // 2 static factory idea reference : Get Your Hands Dirty on Clean Architecture's Account class in chapter 6
     // create new book which is not yet persisted
     public static Book createNewBook(String bookName, String authorName, Long price, Long page, Long quantity){
         Book book = new Book();

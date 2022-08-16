@@ -76,6 +76,7 @@ public class BasicExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> handleException(Exception e) {
         final ErrorResponse response = ErrorResponse.of(ErrorStatus.INTERNAL_SERVER_ERROR);
+        // TODO 개발 모드일 경우, 여기서 로그 출력시키는게 맞다.
         return new ResponseEntity<>(response, response.getHttpStatus());
     }
 }
