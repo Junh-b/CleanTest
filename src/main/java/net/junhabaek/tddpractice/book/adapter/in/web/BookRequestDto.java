@@ -6,20 +6,29 @@ import lombok.*;
 import net.junhabaek.tddpractice.book.domain.Money;
 import net.junhabaek.tddpractice.book.domain.Quantity;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import java.math.BigInteger;
+
 public interface BookRequestDto {
     @Getter
     @ToString
     public static class RegisterBookRequest {
+        @NotBlank
         private final String bookName;
+        @NotBlank
         private final String authorName;
-        private final Money price;
+        @Min(value=1)
+        private final Long price;
+        @Min(value=1)
         private final Long page;
-        private final Quantity quantity;
+        @Min(value=0)
+        private final BigInteger quantity;
 
         @JsonCreator
         public RegisterBookRequest(@JsonProperty("bookName")String bookName, @JsonProperty("authorName")String authorName,
-                                   @JsonProperty("price")Money price, @JsonProperty("page")Long page,
-                                   @JsonProperty("quantity")Quantity quantity) {
+                                   @JsonProperty("price")Long price, @JsonProperty("page")Long page,
+                                   @JsonProperty("quantity")BigInteger quantity) {
             this.bookName = bookName;
             this.authorName = authorName;
             this.price = price;

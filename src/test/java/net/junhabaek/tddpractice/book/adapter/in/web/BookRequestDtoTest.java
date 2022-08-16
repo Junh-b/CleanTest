@@ -35,9 +35,9 @@ public class BookRequestDtoTest {
         //then
         Assertions.assertEquals(bookName, registerBookRequest.getBookName());
         Assertions.assertEquals(authorName, registerBookRequest.getAuthorName());
-        Assertions.assertEquals(BigInteger.valueOf(price), registerBookRequest.getPrice().getAmount());
+        Assertions.assertEquals(price, registerBookRequest.getPrice());
         Assertions.assertEquals(page, registerBookRequest.getPage());
-        Assertions.assertEquals(BigInteger.valueOf(quantity), registerBookRequest.getQuantity().getQuantity());
+        Assertions.assertEquals(BigInteger.valueOf(quantity), registerBookRequest.getQuantity());
     }
 
     private ObjectNode buildRequestJson(String bookName, String authorName, Long price, Long page, Long quantity){
