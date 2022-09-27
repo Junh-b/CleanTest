@@ -2,11 +2,19 @@ package net.junhabaek.tddpractice.book.domain;
 
 import lombok.Getter;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 import java.math.BigInteger;
+import java.util.Objects;
 
-// Money와 코드가 유사하긴 하지만, 현재로서는 우발적 중복으로 판단. 앞으로 변경될 이유도 다를 것.
+// can be replaced with 'Amount' VO
+@Embeddable
+@Access(value= AccessType.FIELD)
 public class Quantity {
-    public static Quantity ZERO = Quantity.of(0L);
+    @Transient
+    public final static Quantity ZERO = Quantity.of(0L);
 
     @Getter
     private final BigInteger quantity;
@@ -14,11 +22,11 @@ public class Quantity {
     public Quantity plus(Quantity other){
         return new Quantity(this.quantity.add(other.quantity));
     }
-    public Money minus(Quantity other) {
-        return new Money(this.quantity.subtract(other.quantity));
+    public Quantity minus(Quantity other) {
+        return new Quantity(this.quantity.subtract(other.quantity));
     }
-    public Money multiply(Long times) {
-        return new Money(this.quantity.multiply(BigInteger.valueOf(times)));
+    public Quantity multiply(Long times) {
+        return new Quantity(this.quantity.multiply(BigInteger.valueOf(times)));
     }
 
     private Quantity(){
@@ -35,5 +43,18 @@ public class Quantity {
 
     public static Quantity of(Long value){
         return new Quantity(BigInteger.valueOf(value));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Quantity quantity1 = (Quantity) o;
+        return quantity.equals(quantity1.quantity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(quantity);
     }
 }

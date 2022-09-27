@@ -40,18 +40,17 @@ public class BookAcceptanceTest extends AcceptanceTest {
 
         //when
         ExtractableResponse<Response> response = registerBook(bookName, authorName, price, page, quantity);
+        JsonPath jsonPath = response.body().jsonPath();
 
         //then
         Assertions.assertEquals(HttpStatus.CREATED.value(), response.statusCode());
-
-        // TODO 사실 이것만으로 인수조건을 달성했다고 말하기는 힘들다.
-        // 인수테스트는 '완성'에 초점을 두기 때문에, get 요청까지 세트로 되어야 완성되었다고 말할 수 있을 것.
-
+        Assertions.assertNotNull(jsonPath.getInt("bookId"));
+        Assertions.assertNotNull(jsonPath.getString("createdDate"));
     }
 
     @DisplayName("유효하지 않은 책 생성 요청을 전달했을 때, 책 생성에 실패한다.")
     @Test
-    void given_when_then() {
+    void GivenInvalidRegisterBookRequest_WhenRegisterBook_ShouldBeFail() {
         //given
         String bookName = "";
         String authorName = "";
@@ -85,6 +84,7 @@ public class BookAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    // 재사용 가능.
     ExtractableResponse<Response> registerBook(String bookName, String authorName, Long price,
                                                Long page, Long quantity){
 

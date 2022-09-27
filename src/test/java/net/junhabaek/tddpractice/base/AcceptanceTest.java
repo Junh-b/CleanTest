@@ -26,6 +26,7 @@ public abstract class AcceptanceTest {
 
     protected abstract List<Class> getEntityClasses();
 
+    // TODO execute 중 annotation으로부터 table, id 추출하는 로직을 BeforeALL로 옮기기
     @BeforeEach
     public void setUp(){
         RestAssuredMockMvc.webAppContextSetup(applicationContext);

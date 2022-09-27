@@ -2,15 +2,36 @@ package net.junhabaek.tddpractice.book.domain;
 
 import lombok.Getter;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 import java.math.BigInteger;
 import java.util.Objects;
 
-// defined for avoid minus amount
+@Embeddable
+@Access(value= AccessType.FIELD)
 public class Money {
-    public static Money ZERO = Money.of(0L);
+    @Transient
+    public final static Money ZERO = Money.of(0L);
 
     @Getter
     private final BigInteger amount;
+
+    private Money(){
+        this.amount = BigInteger.ZERO;
+    }
+    public Money(BigInteger amount) {
+        if(amount == null || amount.compareTo(BigInteger.ZERO) < 0) {
+            throw new IllegalStateException("Money can not have minus value.");
+        }
+
+        this.amount = amount;
+    }
+
+    public static Money of(Long value){
+        return new Money(BigInteger.valueOf(value));
+    }
 
     @Override
     public int hashCode() {
@@ -35,20 +56,5 @@ public class Money {
     }
     public Money multiply(Long times) {
         return new Money(this.amount.multiply(BigInteger.valueOf(times)));
-    }
-
-    private Money(){
-        this.amount = BigInteger.ZERO;
-    }
-    public Money(BigInteger amount) {
-        if(amount == null || amount.compareTo(BigInteger.ZERO) < 0) {
-            throw new IllegalStateException("Money can not have minus value.");
-        }
-
-        this.amount = amount;
-    }
-
-    public static Money of(Long value){
-        return new Money(BigInteger.valueOf(value));
     }
 }

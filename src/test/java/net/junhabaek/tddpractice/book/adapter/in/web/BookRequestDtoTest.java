@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigInteger;
-
 public class BookRequestDtoTest {
     public static ObjectMapper objectMapper;
 
@@ -37,7 +35,7 @@ public class BookRequestDtoTest {
         Assertions.assertEquals(authorName, registerBookRequest.getAuthorName());
         Assertions.assertEquals(price, registerBookRequest.getPrice());
         Assertions.assertEquals(page, registerBookRequest.getPage());
-        Assertions.assertEquals(BigInteger.valueOf(quantity), registerBookRequest.getQuantity());
+        Assertions.assertEquals(quantity, registerBookRequest.getQuantity());
     }
 
     private ObjectNode buildRequestJson(String bookName, String authorName, Long price, Long page, Long quantity){

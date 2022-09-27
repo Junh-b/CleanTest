@@ -23,6 +23,7 @@ public class ErrorResponse {
     @JsonIgnore
     private HttpStatus httpStatus;
     private List<FieldError> errors;
+    //TODO 사실, 이 프로젝트에서 사용할 FieldError를 따로 정의하는게 더 적절. 이미 만들어진 FieldError는 너무 많은 정보 포함
     private String errorCode;
 
 
