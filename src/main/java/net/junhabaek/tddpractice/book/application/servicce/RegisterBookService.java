@@ -10,10 +10,13 @@ import net.junhabaek.tddpractice.book.domain.Money;
 import net.junhabaek.tddpractice.book.domain.Page;
 import net.junhabaek.tddpractice.book.domain.Quantity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
+@Validated
 @Service
 public class RegisterBookService implements RegisterBookUsecase {
 
@@ -21,7 +24,7 @@ public class RegisterBookService implements RegisterBookUsecase {
 
     @Override
     @Transactional
-    public BookInfo registerBook(BookCommand.RegisterBook registerBookCommand) {
+    public BookInfo registerBook(@Valid BookCommand.RegisterBook registerBookCommand) {
         Book newBook = Book.createNewBook(registerBookCommand.getBookName(),
                                             registerBookCommand.getAuthorName(),
                                             Money.of(registerBookCommand.getPrice()),

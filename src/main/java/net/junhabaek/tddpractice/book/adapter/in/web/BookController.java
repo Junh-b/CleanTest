@@ -22,7 +22,7 @@ public class BookController {
     private final BookResponseDtoMapper responseDtoMapper;
 
     @PostMapping("books")
-    public ResponseEntity<BookResponseDto.RegisterBookResponse> registerBook(@Valid @RequestBody BookRequestDto.RegisterBookRequest request){
+    public ResponseEntity<BookResponseDto.RegisterBookResponse> registerBook(@RequestBody BookRequestDto.RegisterBookRequest request){
         BookCommand.RegisterBook command = requestDtoMapper.registerRequestToRegisterCommand(request);
 
         BookInfo resultBookInfo = registerBookService.registerBook(command);

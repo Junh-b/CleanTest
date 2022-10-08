@@ -7,25 +7,21 @@ import lombok.ToString;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /*
     Money와 Quantity ValueObject는 BigInteger인데, BookRequestDto의 price, quantity가 Long인 이유:
     Money와 Quantity는 책 말고도 다른곳에 쓰일 수 있는 범용 값 객체이다.
-    하지만 책에 한해서는 BigInteger까지의 범위가 불필요하다. 책의 가격이 20억을 넘거나, 책의 잔고가 20억을 넘는 사례는 없을 것이라 판단.
+    하지만 이 사용사례에 한해서는. 책의 가격이 20억을 넘거나, 책의 잔고가 20억을 넘는 사례는 없을 것이라 판단.
  */
-public interface BookRequestDto {
+public abstract class BookRequestDto {
     @Getter
     @ToString
     public static class RegisterBookRequest {
-        @NotBlank
         private final String bookName;
-        @NotBlank
         private final String authorName;
-        @Min(value=1)
         private final Long price;
-        @Min(value=1)
         private final Long page;
-        @Min(value=0)
         private final Long quantity;
 
         @JsonCreator

@@ -6,7 +6,7 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-public interface BookResponseDto {
+public abstract class BookResponseDto {
     @Getter
     @ToString
     @AllArgsConstructor

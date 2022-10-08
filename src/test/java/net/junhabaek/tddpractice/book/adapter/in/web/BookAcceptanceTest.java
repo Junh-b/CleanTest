@@ -8,6 +8,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import net.junhabaek.tddpractice.base.AcceptanceTest;
 import net.junhabaek.tddpractice.book.domain.Book;
+import net.junhabaek.tddpractice.common.exception.ErrorResponse;
 import net.junhabaek.tddpractice.common.exception.ErrorStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +16,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 
@@ -58,6 +61,13 @@ public class BookAcceptanceTest extends AcceptanceTest {
         Long page = -1L;
         Long quantity = -50L;
 
+        Map<String, ErrorResponse.FieldErrorDetail> expectedFieldErrorDetails = new HashMap<>();
+        expectedFieldErrorDetails.put("bookName", new ErrorResponse.FieldErrorDetail("bookName", "", "bookName cannot be blank."));
+        expectedFieldErrorDetails.put("authorName", new ErrorResponse.FieldErrorDetail("authorName", "", "authorName cannot be blank."));
+        expectedFieldErrorDetails.put("price", new ErrorResponse.FieldErrorDetail("price", "-50", "price should be 100 or more. '-50' is less than 100."));
+        expectedFieldErrorDetails.put("page", new ErrorResponse.FieldErrorDetail("page", "-1", "page should be 1 or more. '-1' is less than 1."));
+        expectedFieldErrorDetails.put("quantity", new ErrorResponse.FieldErrorDetail("quantity", "-50", "quantity should be 0 or more. '-50' is less than 0."));
+
         //when
         ExtractableResponse<Response> response = registerBook(bookName, authorName, price, page, quantity);
         JsonPath jsonPath = response.body().jsonPath();
@@ -74,14 +84,18 @@ public class BookAcceptanceTest extends AcceptanceTest {
                 ErrorStatus.INVALID_INPUT_VALUE.getDefaultErrorMessage(),
                 jsonPath.getString("errorMessage"));
 
+
         Assertions.assertEquals(
                 5,
-                jsonPath.getList("errors").size()
+                jsonPath.getList("fieldErrorDetails").size()
         );
 
-        Assertions.assertFalse(
-                jsonPath.getBoolean("errors[0].bindingFailure")
-        );
+        for (ErrorResponse.FieldErrorDetail fieldErrorDetail: jsonPath.getList("fieldErrorDetails", ErrorResponse.FieldErrorDetail.class)) {
+            ErrorResponse.FieldErrorDetail expectedDetail = expectedFieldErrorDetails.get(fieldErrorDetail.getFieldName());
+
+            Assertions.assertEquals(expectedDetail.getRejectedValue(), fieldErrorDetail.getRejectedValue());
+            Assertions.assertEquals(expectedDetail.getConstraintMessage(), fieldErrorDetail.getConstraintMessage());
+        }
     }
 
     // 재사용 가능.
