@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.*;
+import net.junhabaek.tddpractice.common.validation.ValidationHelper;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 
 import javax.validation.ConstraintViolation;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,7 +50,7 @@ public class ErrorResponse {
                 constraintViolations.stream()
                         .map((constraintViolation ->
                                 new FieldErrorDetail(
-                                        extractFieldNameFrom(constraintViolation.getPropertyPath().toString()),
+                                        ValidationHelper.extractFieldNameFromPropertyPathStr(constraintViolation.getPropertyPath().toString()),
                                         defaultStringIfNull(constraintViolation.getInvalidValue(), "Null"),
                                         defaultStringIfNull(constraintViolation.getMessage(),"No message")
                                 )))
@@ -70,12 +70,6 @@ public class ErrorResponse {
                         .collect(Collectors.toList());
 
         return new ErrorResponse(status, extractedDetails);
-    }
-
-    private static String extractFieldNameFrom(String propertyPath){
-        List<String> chunks = Arrays.asList(propertyPath.split("\\."));
-        int lastIndex = chunks.size()-1;
-        return lastIndex >=0? chunks.get(lastIndex) : "None";
     }
 
     private static String defaultStringIfNull(Object obj, String defaultStr){
