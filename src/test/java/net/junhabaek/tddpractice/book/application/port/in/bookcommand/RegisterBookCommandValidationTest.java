@@ -1,13 +1,10 @@
 package net.junhabaek.tddpractice.book.application.port.in.bookcommand;
 
 import net.junhabaek.tddpractice.book.application.port.in.BookCommand;
-import net.junhabaek.tddpractice.common.validation.ConstraintMessageTemplate;
-import net.junhabaek.tddpractice.common.validation.constraint.DistinguishableName;
 import net.junhabaek.tddpractice.utils.validation.ValidatorTest;
 import org.junit.jupiter.api.Test;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -44,139 +41,6 @@ public class RegisterBookCommandValidationTest extends ValidatorTest<BookCommand
     /*
         START OF BOOK_NAME TEST
      */
-    @Test
-    void Given_NullBookName_When_ValidateCommand_Then_NotNullConstraintViolationReturned() {
-        //given
-        String nullBookName = null;
-
-        BookCommand.RegisterBook invalidRegisterCommand =
-                BookCommand.RegisterBook.builder()
-                        .bookName(nullBookName)
-                        .authorName(VALID_AUTHOR_NAME)
-                        .price(VALID_PRICE)
-                        .page(VALID_PAGE)
-                        .quantity(VALID_QUANTITY)
-                        .build();
-
-        //when
-        List<ConstraintViolationInfo> constraintViolationInfoList = validate(invalidRegisterCommand);
-
-        //then
-        then(constraintViolationInfoList.size()).isEqualTo(1);
-
-        ConstraintViolationInfo bookNameConstraintViolation = constraintViolationInfoList.get(0);
-        then(bookNameConstraintViolation.getConstraintClass()).isEqualTo(NotNull.class);
-        then(bookNameConstraintViolation.getMessage()).isEqualTo("bookName cannot be null.");
-    }
-
-    @Test
-    void Given_BlankBookName_When_ValidatingCommand_Then_DistinguishableNameConstraintViolationReturned() {
-        //given
-        String blankBookName = "   ";
-
-        BookCommand.RegisterBook invalidRegisterCommand =
-                BookCommand.RegisterBook.builder()
-                        .bookName(blankBookName)
-                        .authorName(VALID_AUTHOR_NAME)
-                        .price(VALID_PRICE)
-                        .page(VALID_PAGE)
-                        .quantity(VALID_QUANTITY)
-                        .build();
-
-        //when
-        List<ConstraintViolationInfo> constraintViolationInfoList = validate(invalidRegisterCommand);
-
-        //then
-        then(constraintViolationInfoList.size()).isEqualTo(1);
-
-        ConstraintViolationInfo bookNameConstraintViolation = constraintViolationInfoList.get(0);
-        then(bookNameConstraintViolation.getConstraintClass()).isEqualTo(DistinguishableName.class);
-        then(bookNameConstraintViolation.getInvalidValue()).isEqualTo(blankBookName);
-        then(bookNameConstraintViolation.getMessage()).isEqualTo("bookName" +
-                ConstraintMessageTemplate.DISTINGUISHABLE_NAME_TEMPLATE);
-    }
-
-    @Test
-    void Given_BookNameWithWhitespaceBeforeWord_When_ValidatingCommand_Then_DistinguishableNameConstraintViolationReturned() {
-        //given
-        String bookNameWithWhitespaceBeforeWord = " " + VALID_BOOK_NAME;
-
-        BookCommand.RegisterBook invalidRegisterCommand =
-                BookCommand.RegisterBook.builder()
-                        .bookName(bookNameWithWhitespaceBeforeWord)
-                        .authorName(VALID_AUTHOR_NAME)
-                        .price(VALID_PRICE)
-                        .page(VALID_PAGE)
-                        .quantity(VALID_QUANTITY)
-                        .build();
-
-        //when
-        List<ConstraintViolationInfo> constraintViolationInfoList = validate(invalidRegisterCommand);
-
-        //then
-        then(constraintViolationInfoList.size()).isEqualTo(1);
-
-        ConstraintViolationInfo bookNameConstraintViolation = constraintViolationInfoList.get(0);
-        then(bookNameConstraintViolation.getConstraintClass()).isEqualTo(DistinguishableName.class);
-        then(bookNameConstraintViolation.getInvalidValue()).isEqualTo(bookNameWithWhitespaceBeforeWord);
-        then(bookNameConstraintViolation.getMessage()).isEqualTo("bookName" +
-                ConstraintMessageTemplate.DISTINGUISHABLE_NAME_TEMPLATE);
-    }
-
-    @Test
-    void Given_BookNameWithWhitespaceAfterWord_When_ValidatingCommand_Then_DistinguishableNameConstraintViolationReturned() {
-        //given
-        String bookNameWithWhitespaceAfterWord = VALID_BOOK_NAME + "  ";
-
-        BookCommand.RegisterBook invalidRegisterCommand =
-                BookCommand.RegisterBook.builder()
-                        .bookName(bookNameWithWhitespaceAfterWord)
-                        .authorName(VALID_AUTHOR_NAME)
-                        .price(VALID_PRICE)
-                        .page(VALID_PAGE)
-                        .quantity(VALID_QUANTITY)
-                        .build();
-
-        //when
-        List<ConstraintViolationInfo> constraintViolationInfoList = validate(invalidRegisterCommand);
-
-        //then
-        then(constraintViolationInfoList.size()).isEqualTo(1);
-
-        ConstraintViolationInfo bookNameConstraintViolation = constraintViolationInfoList.get(0);
-        then(bookNameConstraintViolation.getConstraintClass()).isEqualTo(DistinguishableName.class);
-        then(bookNameConstraintViolation.getInvalidValue()).isEqualTo(bookNameWithWhitespaceAfterWord);
-        then(bookNameConstraintViolation.getMessage()).isEqualTo("bookName" +
-                ConstraintMessageTemplate.DISTINGUISHABLE_NAME_TEMPLATE);
-    }
-
-    @Test
-    void Given_BookNameWithForbiddenCharacters_When_ValidatingCommand_Then_DistinguishableNameConstraintViolationReturned() {
-        //given
-        String bookNameWithForbiddenCharacters = "abc\ndef";
-
-        BookCommand.RegisterBook invalidRegisterCommand =
-                BookCommand.RegisterBook.builder()
-                        .bookName(bookNameWithForbiddenCharacters)
-                        .authorName(VALID_AUTHOR_NAME)
-                        .price(VALID_PRICE)
-                        .page(VALID_PAGE)
-                        .quantity(VALID_QUANTITY)
-                        .build();
-
-        //when
-        List<ConstraintViolationInfo> constraintViolationInfoList = validate(invalidRegisterCommand);
-
-        //then
-        then(constraintViolationInfoList.size()).isEqualTo(1);
-
-        ConstraintViolationInfo bookNameConstraintViolation = constraintViolationInfoList.get(0);
-        then(bookNameConstraintViolation.getConstraintClass()).isEqualTo(DistinguishableName.class);
-        then(bookNameConstraintViolation.getInvalidValue()).isEqualTo(bookNameWithForbiddenCharacters);
-        then(bookNameConstraintViolation.getMessage()).isEqualTo("bookName" +
-                ConstraintMessageTemplate.DISTINGUISHABLE_NAME_TEMPLATE);
-    }
-
     @Test
     void Given_EmptyBookName_When_ValidatingCommand_Then_SizeConstraintViolationReturned() {
         //given

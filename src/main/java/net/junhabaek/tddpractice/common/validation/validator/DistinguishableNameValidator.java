@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 public class DistinguishableNameValidator implements ConstraintValidator<DistinguishableName, String> {
-    private static final Set<Character> whitespaceCharacters = new HashSet<>(List.of('\t', '\n', '\b', ' '));
+    private static final Set<Character> whitespaceCharacters = new HashSet<>(List.of('\t', '\n', '\b', '\r', ' '));
 
     @Override
     public boolean isValid(String str, ConstraintValidatorContext context) {
