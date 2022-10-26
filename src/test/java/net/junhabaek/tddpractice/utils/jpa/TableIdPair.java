@@ -1,6 +1,6 @@
 package net.junhabaek.tddpractice.utils.jpa;
 
-class TableIdPair {
+public class TableIdPair {
     public String tableName;
     public String idName;
 

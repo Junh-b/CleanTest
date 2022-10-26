@@ -7,16 +7,16 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import net.junhabaek.tddpractice.base.AcceptanceTest;
+import net.junhabaek.tddpractice.book.adapter.out.persistence.BookRepository;
 import net.junhabaek.tddpractice.book.domain.Book;
 import net.junhabaek.tddpractice.common.exception.ErrorResponse;
 import net.junhabaek.tddpractice.common.exception.ErrorStatus;
 import net.junhabaek.tddpractice.common.validation.ConstraintMessageTemplate;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +27,9 @@ public class BookAcceptanceTest extends AcceptanceTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    BookRepository bookRepository;
+
     @Override
     protected List<Class> getEntityClasses() {
         return List.of(Book.class);
@@ -34,6 +37,7 @@ public class BookAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("유효한 책 생성 요청을 전달했을 때, 책 생성에 성공한다.")
     @Test
+    @Transactional
     void GivenValidRegisterBookRequest_WhenRegisterBook_ShouldBeSuccessful() {
         //given
         String bookName = "tragedy of Y";
@@ -49,11 +53,13 @@ public class BookAcceptanceTest extends AcceptanceTest {
         //then
         Assertions.assertEquals(HttpStatus.CREATED.value(), response.statusCode());
         Assertions.assertNotNull(jsonPath.getInt("bookId"));
+        System.out.println(jsonPath.getInt("bookId"));
         Assertions.assertNotNull(jsonPath.getString("createdDate"));
     }
 
     @DisplayName("유효하지 않은 책 생성 요청을 전달했을 때, 책 생성에 실패한다.")
     @Test
+    @Transactional
     void GivenInvalidRegisterBookRequest_WhenRegisterBook_ShouldBeFail() {
         //given
         String bookName = "ab\ndf";

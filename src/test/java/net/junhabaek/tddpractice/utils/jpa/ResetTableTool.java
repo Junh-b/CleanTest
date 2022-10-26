@@ -18,11 +18,9 @@ public class ResetTableTool {
     private EntityManager entityManager;
 
     @Transactional
-    public void execute(List<Class> entityClasses) {
+    public void execute(List<TableIdPair> tableIdPairs) {
         entityManager.flush();
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
-
-        List<TableIdPair> tableIdPairs = extractTableIdPairsFromEntityClasses(entityClasses);
 
         for (TableIdPair tableIdPair: tableIdPairs) {
             entityManager.createNativeQuery("TRUNCATE TABLE " + tableIdPair.tableName).executeUpdate();
@@ -32,19 +30,4 @@ public class ResetTableTool {
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
     }
 
-    private List<TableIdPair> extractTableIdPairsFromEntityClasses(List<Class> entityClasses) {
-        List<TableIdPair> tableIdPairs = new ArrayList<>();
-
-        for(Class entityClass:
-            entityClasses){
-            String tableName = extractTableNameFromEntityClass(entityClass);
-            String idName = extractIdNameFromEntityClass(entityClass);
-
-            TableIdPair tableIdPair = new TableIdPair(tableName, idName);
-
-            tableIdPairs.add(tableIdPair);
-        }
-
-        return tableIdPairs;
-    }
 }
