@@ -1,11 +1,11 @@
 {
-  "errorCode": "A05",
-  "errorMessage" : "Unexpected Server Error",
-  "errors": [
+  "errorCode": "A03",
+  "errorMessage" : "Invalid Input",
+  "fieldErrorDetails": [
     {
-      "objectName": "someObject",
-      "field": "someField",
-      "defaultMessage": "someMessage"
+      "fieldName": "someField",
+      "rejectedValue": "rejectedValue",
+      "constraintMessage": "someMessage"
     }
   ]
 }

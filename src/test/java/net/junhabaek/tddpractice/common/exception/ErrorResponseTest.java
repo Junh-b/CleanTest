@@ -11,6 +11,8 @@ import org.springframework.validation.FieldError;
 import java.io.IOException;
 import java.util.List;
 
+import static org.assertj.core.api.BDDAssertions.then;
+
 public class ErrorResponseTest {
     public static ObjectMapper objectMapper;
 
@@ -20,7 +22,7 @@ public class ErrorResponseTest {
     }
 
     @Test
-    void givenJsonFile_whenReadAsJsonNode_shouldIncludErrorCodeFieldWith1() throws IOException {
+    void Given_JsonFile_When_ReadAsJsonNode_Then_shouldIncludeErrorCodeFieldWith1() throws IOException {
         //given
         JsonNode jsonNode = objectMapper.readValue(
                 ResourceUtils.getFile("classpath:ErrorResponseExampleWithFieldError.json"),
@@ -29,36 +31,36 @@ public class ErrorResponseTest {
         String code = jsonNode.get("errorCode").asText();
 
         //then
-        Assertions.assertEquals("A05", code);
+        then(code).isEqualTo(ErrorStatus.INVALID_INPUT_VALUE.getErrorCode());
     }
 
     @Test
-    void givenErrorResponseWithFieldError_whenConvertToJson_thenShouldEqualExpectedFormat() throws IOException {
+    void Given_ErrorResponseWithFieldError_When_ConvertToJson_Then_ShouldEqualExpectedFormat() throws IOException {
         //given
         JsonNode expectedJsonNode = objectMapper.readValue(
                 ResourceUtils.getFile("classpath:ErrorResponseExampleWithFieldError.json"),
                 JsonNode.class);
-        JsonNode expectedErrorsNode = expectedJsonNode.get("errors").elements().next();
+        JsonNode expectedErrorsNode = expectedJsonNode.get("fieldErrorDetails").elements().next();
 
         List<FieldError> targetFieldErrors = List.of(
-                new FieldError("someObject", "someField", "someMessage"));
+                new FieldError("someObject", "someField", "rejectedValue",
+                        true, null, null, "someMessage"));
 
-        ErrorResponse targetErrorResponse = ErrorResponse.of(ErrorStatus.INTERNAL_SERVER_ERROR, targetFieldErrors);
+        ErrorResponse targetErrorResponse = ErrorResponse.of(ErrorStatus.INVALID_INPUT_VALUE, targetFieldErrors);
 
         //when
         JsonNode actualConvertResult = objectMapper.valueToTree(targetErrorResponse);
-        JsonNode actualErrorsNode = actualConvertResult.get("errors").elements().next();
+        JsonNode actualErrorsNode = actualConvertResult.get("fieldErrorDetails").elements().next();
 
         //then
-        Assertions.assertFalse(actualConvertResult.has("httpStatus"));
+        then(actualConvertResult.has("httpStatus")).isFalse();
 
-        Assertions.assertEquals(expectedJsonNode.get("errorCode").asText(), actualConvertResult.get("errorCode").asText());
-        Assertions.assertEquals(expectedJsonNode.get("errorMessage").asText(), actualConvertResult.get("errorMessage").asText());
+        then(actualConvertResult.get("errorCode")).isEqualTo(expectedJsonNode.get("errorCode"));
+        then(actualConvertResult.get("errorMessage").asText()).isEqualTo(expectedJsonNode.get("errorMessage").asText());
 
-        Assertions.assertEquals(expectedErrorsNode.get("objectName").asText(), actualErrorsNode.get("objectName").asText());
-        Assertions.assertEquals(expectedErrorsNode.get("field").asText(), actualErrorsNode.get("field").asText());
-        Assertions.assertEquals(expectedErrorsNode.get("defaultMessage").asText(), actualErrorsNode.get("defaultMessage").asText());
-
+        then(actualErrorsNode.get("rejectedValue").asText()).isEqualTo(expectedErrorsNode.get("rejectedValue").asText());
+        then(actualErrorsNode.get("fieldName").asText()).isEqualTo(expectedErrorsNode.get("fieldName").asText());
+        then(actualErrorsNode.get("constraintMessage").asText()).isEqualTo(expectedErrorsNode.get("constraintMessage").asText());
     }
 
     @Test
@@ -74,10 +76,10 @@ public class ErrorResponseTest {
         JsonNode actualConvertResult = objectMapper.valueToTree(targetErrorResponse);
 
         //then
-        Assertions.assertFalse(actualConvertResult.has("httpStatus"));
-        Assertions.assertFalse(actualConvertResult.has("errors"));
+        then(actualConvertResult.has("httpStatus")).isFalse();
+        then(actualConvertResult.has("fieldErrorDetails")).isFalse();
 
-        Assertions.assertEquals(expectedJsonNode.get("errorCode").asText(), actualConvertResult.get("errorCode").asText());
-        Assertions.assertEquals(expectedJsonNode.get("errorMessage").asText(), actualConvertResult.get("errorMessage").asText());
+        then(actualConvertResult.get("errorCode").asText()).isEqualTo(expectedJsonNode.get("errorCode").asText());
+        then(actualConvertResult.get("errorMessage").asText()).isEqualTo(expectedJsonNode.get("errorMessage").asText());
     }
 }
