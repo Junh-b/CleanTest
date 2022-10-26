@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class BookRequestDtoTest {
@@ -15,8 +16,9 @@ public class BookRequestDtoTest {
         objectMapper = new ObjectMapper();
     }
 
+    @DisplayName("RegisterBook에 필요한 정보를 가진 ObjectNode를 ObjectMapper로 성공적으로 변환할 수 있다.")
     @Test
-    void givenObjectNodeWithBookRequestDtoFormat_whenConvertToBookRequestDto_thenAllFieldsShouldBeValid() throws JsonProcessingException {
+    void Given_ObjectNodeForRegisterBook_When_ConvertToBookRequestDto_Then_AllFieldsShouldBeValid() throws JsonProcessingException {
         //given
         final String bookName = "tragedy of Y";
         final String authorName = "Ellery Queen";

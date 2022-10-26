@@ -25,7 +25,7 @@ public class BookPersistenceTest {
     }
 
     @Test
-    void GivenInitialBook_WhenFindWithEntityManager_ThenResultHasExpectedId() {
+    void Given_InitialBook_When_FindWithEntityManager_Then_ResultHasExpectedId() {
         //given
         Long id = initBook();
 
@@ -37,7 +37,7 @@ public class BookPersistenceTest {
     }
 
     @Test
-    void GivenInitialBook_WhenFindWithJPQLFind_ThenResultHasExpectedId() {
+    void Given_InitialBook_When_FindWithJPQLFind_Then_ResultHasExpectedId() {
         //given
         Long id = initBook();
 

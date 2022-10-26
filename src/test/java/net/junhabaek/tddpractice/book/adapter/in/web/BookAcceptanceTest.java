@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.BDDAssertions.then;
 
 public class BookAcceptanceTest extends AcceptanceTest {
     @Autowired
@@ -38,7 +39,7 @@ public class BookAcceptanceTest extends AcceptanceTest {
     @DisplayName("유효한 책 생성 요청을 전달했을 때, 책 생성에 성공한다.")
     @Test
     @Transactional
-    void GivenValidRegisterBookRequest_WhenRegisterBook_ShouldBeSuccessful() {
+    void Given_ValidRegisterBookRequest_When_RegisterBook_Then_ShouldBeSuccessful() {
         //given
         String bookName = "tragedy of Y";
         String authorName = "Ellery Queen";
@@ -51,16 +52,18 @@ public class BookAcceptanceTest extends AcceptanceTest {
         JsonPath jsonPath = response.body().jsonPath();
 
         //then
-        Assertions.assertEquals(HttpStatus.CREATED.value(), response.statusCode());
-        Assertions.assertNotNull(jsonPath.getInt("bookId"));
-        System.out.println(jsonPath.getInt("bookId"));
-        Assertions.assertNotNull(jsonPath.getString("createdDate"));
+        then(response.statusCode())
+                .isEqualTo(HttpStatus.CREATED.value());
+        then(jsonPath.getInt("bookId"))
+                .isNotNull();
+        then(jsonPath.getString("createdDate"))
+                .isNotNull();
     }
 
     @DisplayName("유효하지 않은 책 생성 요청을 전달했을 때, 책 생성에 실패한다.")
     @Test
     @Transactional
-    void GivenInvalidRegisterBookRequest_WhenRegisterBook_ShouldBeFail() {
+    void Given_InvalidRegisterBookRequest_When_RegisterBook_Then_ShouldBeFail() {
         //given
         String bookName = "ab\ndf";
         String authorName = "  abcd";
@@ -69,44 +72,42 @@ public class BookAcceptanceTest extends AcceptanceTest {
         Long quantity = -50L;
 
         Map<String, ErrorResponse.FieldErrorDetail> expectedFieldErrorDetails = new HashMap<>();
-        expectedFieldErrorDetails.put("bookName", new ErrorResponse.FieldErrorDetail("bookName",
-                bookName, "bookName" + ConstraintMessageTemplate.DISTINGUISHABLE_NAME_TEMPLATE));
-        expectedFieldErrorDetails.put("authorName", new ErrorResponse.FieldErrorDetail("authorName",
-                authorName, "authorName" + ConstraintMessageTemplate.DISTINGUISHABLE_NAME_TEMPLATE));
-        expectedFieldErrorDetails.put("price", new ErrorResponse.FieldErrorDetail("price",
-                price.toString(), "price should be 100 or more. '-50' is less than 100."));
-        expectedFieldErrorDetails.put("page", new ErrorResponse.FieldErrorDetail("page",
-                page.toString(), "page should be 1 or more. '-1' is less than 1."));
-        expectedFieldErrorDetails.put("quantity", new ErrorResponse.FieldErrorDetail("quantity",
-                quantity.toString(), "quantity should be 0 or more. '-50' is less than 0."));
+        expectedFieldErrorDetails.put("bookName",
+                new ErrorResponse.FieldErrorDetail("bookName", bookName,
+                        "bookName" + ConstraintMessageTemplate.DISTINGUISHABLE_NAME_TEMPLATE));
+        expectedFieldErrorDetails.put("authorName",
+                new ErrorResponse.FieldErrorDetail("authorName", authorName,
+                        "authorName" + ConstraintMessageTemplate.DISTINGUISHABLE_NAME_TEMPLATE));
+        expectedFieldErrorDetails.put("price",
+                new ErrorResponse.FieldErrorDetail("price", price.toString(),
+                        "price should be 100 or more. '-50' is less than 100."));
+        expectedFieldErrorDetails.put("page",
+                new ErrorResponse.FieldErrorDetail("page", page.toString(),
+                        "page should be 1 or more. '-1' is less than 1."));
+        expectedFieldErrorDetails.put("quantity",
+                new ErrorResponse.FieldErrorDetail("quantity", quantity.toString(),
+                        "quantity should be 0 or more. '-50' is less than 0."));
 
         //when
         ExtractableResponse<Response> response = registerBook(bookName, authorName, price, page, quantity);
         JsonPath jsonPath = response.body().jsonPath();
 
         //then
-        Assertions.assertEquals(
-                HttpStatus.BAD_REQUEST.value(),
-                response.statusCode());
+        then(response.statusCode())
+                .isEqualTo(HttpStatus.BAD_REQUEST.value());
+        then(jsonPath.getString("errorCode"))
+                .isEqualTo(ErrorStatus.INVALID_INPUT_VALUE.getErrorCode());
+        then(jsonPath.getString("errorMessage"))
+                .isEqualTo(ErrorStatus.INVALID_INPUT_VALUE.getDefaultErrorMessage());
 
-        Assertions.assertEquals(
-                ErrorStatus.INVALID_INPUT_VALUE.getErrorCode(),
-                jsonPath.getString("errorCode"));
-        Assertions.assertEquals(
-                ErrorStatus.INVALID_INPUT_VALUE.getDefaultErrorMessage(),
-                jsonPath.getString("errorMessage"));
-
-
-        Assertions.assertEquals(
-                5,
-                jsonPath.getList("fieldErrorDetails").size()
-        );
+        then(jsonPath.getList("fieldErrorDetails").size())
+                .isEqualTo(5);
 
         for (ErrorResponse.FieldErrorDetail fieldErrorDetail: jsonPath.getList("fieldErrorDetails", ErrorResponse.FieldErrorDetail.class)) {
             ErrorResponse.FieldErrorDetail expectedDetail = expectedFieldErrorDetails.get(fieldErrorDetail.getFieldName());
 
-            Assertions.assertEquals(expectedDetail.getRejectedValue(), fieldErrorDetail.getRejectedValue());
-            Assertions.assertEquals(expectedDetail.getConstraintMessage(), fieldErrorDetail.getConstraintMessage());
+            then(fieldErrorDetail.getRejectedValue()).isEqualTo(expectedDetail.getRejectedValue());
+            then(fieldErrorDetail.getConstraintMessage()).isEqualTo(expectedDetail.getConstraintMessage());
         }
     }
 
