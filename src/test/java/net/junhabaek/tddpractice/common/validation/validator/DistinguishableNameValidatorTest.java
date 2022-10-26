@@ -2,7 +2,7 @@ package net.junhabaek.tddpractice.common.validation.validator;
 
 import net.junhabaek.tddpractice.common.validation.ConstraintMessageTemplate;
 import net.junhabaek.tddpractice.common.validation.constraint.DistinguishableName;
-import net.junhabaek.tddpractice.utils.validation.ValidatorTest;
+import net.junhabaek.tddpractice.base.ValidatorTest;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.BDDAssertions.then;
 

@@ -1,4 +1,4 @@
-package net.junhabaek.tddpractice.utils.validation;
+package net.junhabaek.tddpractice.base;
 
 import net.junhabaek.tddpractice.common.validation.ValidationHelper;
 import org.junit.jupiter.api.BeforeAll;

@@ -1,7 +1,7 @@
 package net.junhabaek.tddpractice.book.application.port.in.bookcommand;
 
 import net.junhabaek.tddpractice.book.application.port.in.BookCommand;
-import net.junhabaek.tddpractice.utils.validation.ValidatorTest;
+import net.junhabaek.tddpractice.base.ValidatorTest;
 import org.junit.jupiter.api.Test;
 
 import javax.validation.constraints.Min;
