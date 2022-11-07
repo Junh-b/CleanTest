@@ -28,7 +28,7 @@ public class Page {
 
     public Page(Long page) {
         if(page == null || page.compareTo(1L) < 0) {
-            throw new IllegalStateException("Page can not have value that below 1.");
+            throw new IllegalArgumentException("Page can not have value that below 1.");
         }
         this.page = page;
     }

@@ -9,7 +9,8 @@ import javax.persistence.Transient;
 import java.math.BigInteger;
 import java.util.Objects;
 
-// can be replaced with 'Amount' VO
+// TODO can be replaced with 'Amount' VO
+// Money와 Quantity의 구조가 상당히 유사해보일 수 있으나, 우발적 중복이며 도메인 로직이 추가될 수록 다른 형태로 바뀔 것.
 @Embeddable
 @Access(value= AccessType.FIELD)
 public class Quantity {
@@ -26,6 +27,9 @@ public class Quantity {
         return new Quantity(this.quantity.subtract(other.quantity));
     }
     public Quantity multiply(Long times) {
+        if(times < 0){
+            throw new IllegalArgumentException("Quantity can not multiply with minus value.");
+        }
         return new Quantity(this.quantity.multiply(BigInteger.valueOf(times)));
     }
 
@@ -35,7 +39,7 @@ public class Quantity {
 
     public Quantity(BigInteger amount) {
         if(amount == null || amount.compareTo(BigInteger.ZERO) < 0) {
-            throw new IllegalStateException("Quantity can not have minus value.");
+            throw new IllegalArgumentException("Quantity can not have minus value.");
         }
 
         this.quantity = amount;

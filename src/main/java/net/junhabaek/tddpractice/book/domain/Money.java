@@ -23,7 +23,7 @@ public class Money {
     }
     public Money(BigInteger amount) {
         if(amount == null || amount.compareTo(BigInteger.ZERO) < 0) {
-            throw new IllegalStateException("Money can not have minus value.");
+            throw new IllegalArgumentException("Money can not have minus value.");
         }
 
         this.amount = amount;
@@ -55,6 +55,9 @@ public class Money {
         return new Money(this.amount.subtract(other.amount));
     }
     public Money multiply(Long times) {
+        if(times < 0){
+            throw new IllegalArgumentException("Money can not multiply with minus value.");
+        }
         return new Money(this.amount.multiply(BigInteger.valueOf(times)));
     }
 }
