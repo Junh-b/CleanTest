@@ -27,6 +27,15 @@ public abstract class AcceptanceTest {
     WebApplicationContext applicationContext;
     List<TableIdPair> tableIdPairs = null;
 
+    /**
+     * @return entityClasses which have @Entity annotation. <br>
+     * not works with hibernate/jpa xml mapping file. <br><br>
+     * you should be careful if entity have inheritance strategy. <br>
+     * - Joined Table: you should include both superclass and subclass. <br>
+     * - Single Table: you should include only superclass. <br>
+     * - Table per Class: you should include only subclasses.
+     *
+     */
     protected abstract List<Class> getEntityClasses();
 
     @BeforeEach
@@ -40,7 +49,6 @@ public abstract class AcceptanceTest {
         RestAssured.port = port;
     }
 
-    // TODO currently not working with JPA's Inheritance strategy 'JOINED TABLE'
     private void resetTable(){
         if(tableIdPairs == null){
             tableIdPairs = extractTableIdPairsFromEntityClasses(getEntityClasses());
