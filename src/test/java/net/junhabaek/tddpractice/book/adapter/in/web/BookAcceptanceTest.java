@@ -38,7 +38,6 @@ public class BookAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("유효한 책 생성 요청을 전달했을 때, 책 생성에 성공한다.")
     @Test
-    @Transactional
     void Given_ValidRegisterBookRequest_When_RegisterBook_Then_ShouldBeSuccessful() {
         //given
         String bookName = "tragedy of Y";
@@ -62,7 +61,6 @@ public class BookAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("유효하지 않은 책 생성 요청을 전달했을 때, 책 생성에 실패한다.")
     @Test
-    @Transactional
     void Given_InvalidRegisterBookRequest_When_RegisterBook_Then_ShouldBeFail() {
         //given
         String bookName = "ab\ndf";
