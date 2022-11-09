@@ -40,6 +40,7 @@ public abstract class AcceptanceTest {
         RestAssured.port = port;
     }
 
+    // TODO currently not working with JPA's Inheritance strategy 'JOINED TABLE'
     private void resetTable(){
         if(tableIdPairs == null){
             tableIdPairs = extractTableIdPairsFromEntityClasses(getEntityClasses());
