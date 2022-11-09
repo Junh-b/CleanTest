@@ -17,6 +17,9 @@ import java.util.List;
 import static net.junhabaek.tddpractice.utils.jpa.HibernateTool.extractIdNameFromEntityClass;
 import static net.junhabaek.tddpractice.utils.jpa.HibernateTool.extractTableNameFromEntityClass;
 
+/**
+ * DO NOT USE this class, when you run with production db.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public abstract class AcceptanceTest {
     @LocalServerPort
